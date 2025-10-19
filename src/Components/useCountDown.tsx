@@ -2,9 +2,50 @@ import { useEffect, useRef, useState } from "react";
 import { Text, View } from "react-native";
 import CountdownClock from "./animations/CountDown";
 
+// React Native compatible event system for countdown timer
+type EventCallback = (data?: any) => void;
+
+class CountdownEventEmitter {
+  private listeners: { [key: string]: EventCallback[] } = {};
+
+  emit(eventType: string, data?: any) {
+    const callbacks = this.listeners[eventType] || [];
+    callbacks.forEach(callback => callback(data));
+  }
+
+  addEventListener(eventType: string, callback: EventCallback) {
+    if (!this.listeners[eventType]) {
+      this.listeners[eventType] = [];
+    }
+    this.listeners[eventType].push(callback);
+  }
+
+  removeEventListener(eventType: string, callback: EventCallback) {
+    if (!this.listeners[eventType]) return;
+    this.listeners[eventType] = this.listeners[eventType].filter(cb => cb !== callback);
+  }
+}
+
+export const CountdownEvents = {
+  TIMER_FINISHED: 'TIMER_FINISHED',
+  emitter: new CountdownEventEmitter(),
+  
+  emit: (eventType: string, data?: any) => {
+    CountdownEvents.emitter.emit(eventType, data);
+  },
+  
+  addEventListener: (eventType: string, callback: EventCallback) => {
+    CountdownEvents.emitter.addEventListener(eventType, callback);
+  },
+  
+  removeEventListener: (eventType: string, callback: EventCallback) => {
+    CountdownEvents.emitter.removeEventListener(eventType, callback);
+  }
+};
+
 /**
  * useCountdown - runs a countdown timer starting from `initialSeconds`
- * and stops automatically when reaching 0.
+ * and stops automatically when reaching 0. Emits TIMER_FINISHED event when done.
  */
 export function useCountdown(initialSeconds: number = 45) {
   const [secondsLeft, setSecondsLeft] = useState(initialSeconds);
@@ -18,6 +59,11 @@ export function useCountdown(initialSeconds: number = 45) {
       setSecondsLeft((prev) => {
         if (prev <= 1) {
           clearInterval(intervalRef.current!);
+          // Emit event when timer reaches zero
+          CountdownEvents.emit(CountdownEvents.TIMER_FINISHED, { 
+            message: 'Time is up!',
+            timestamp: Date.now()
+          });
           return 0;
         }
         return prev - 1;
@@ -38,15 +84,11 @@ export function useCountdown(initialSeconds: number = 45) {
   };
   const TimerDisplay = () => {
     return (
-      <View className="h-4 w-48 flex flex-col items-center justify-center">
-        <View className="flex flex-row items-center justify-center">
-          {/* <PulsingClock size={20}  color="text-yellow-600" />  */}
+
+
+
           <CountdownClock start={secondsLeft}  />
-          <Text className={`flex items-center justify-center text-2xl font-medium mb-4 ${secondsLeft < 10 ? 'text-red-600' : 'text-yellow-600'}`}>
-            {secondsLeft}
-          </Text>
-        </View>
-      </View>
+
     );
   }
 

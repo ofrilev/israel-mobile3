@@ -1,7 +1,7 @@
 module.exports = {
   expo: {
-    name: "num3",
-    slug: "num3",
+    name: "israel-mobile3",
+    slug: "israel-mobile3",
     version: "1.0.0",
     orientation: "portrait",
     userInterfaceStyle: "light",
@@ -12,17 +12,17 @@ module.exports = {
     },
     ios: {
       supportsTablet: true,
-      bundleIdentifier: "com.num3.app"
+      bundleIdentifier: "com.israelmobile3.app"
     },
     android: {
-      package: "com.num3.app"
+      package: "com.israelmobile3.app"
     },
     plugins: [
       "expo-router",
       "expo-asset",
       "expo-font"
     ],
-    scheme: "num3"
+    scheme: "israel-mobile3"
   }
 };
 

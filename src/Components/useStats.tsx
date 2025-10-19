@@ -4,6 +4,8 @@ import { LastScore } from "../../src/@types";
 import { GameState } from "../Classes/GameState";
 import { useFloatingPoint } from "./animations/useFloatingPoint";
 import { useCountdown } from "./useCountDown";
+import AnimatedCircularProgress from "./animations/AnimatedCircle";
+import React from "react";
 export const useStats = (gameState: GameState) => {
     const [bonusPoints, setBonusPoints] = useState(0);
     const [bonusTimeProgress, setBonusTimeProgress] = useState(0);
@@ -11,6 +13,7 @@ export const useStats = (gameState: GameState) => {
     const [isProgressReset, setIsProgressReset] = useState(false);
     // const [scoreComboTrack, setScoreComboTrack] = useState<number>(0);
     const { reset, TimerDisplay, addFiveSeconds } = useCountdown();
+
     const {  FloatingPoints: PlusFiveSeconds, triggerFloatingPoint: triggerPlusFiveSeconds } = useFloatingPoint("score",undefined,1500);
     const {  FloatingPoints: SpeedBonus, triggerFloatingPoint:  triggerSpeedBonus } = useFloatingPoint("speedBonus",undefined,900);
     const {  FloatingPoints: Score, triggerFloatingPoint:  triggerScore } = useFloatingPoint("score",undefined,900);
@@ -43,19 +46,6 @@ export const useStats = (gameState: GameState) => {
         return;
     };
     
-        const BonusTimeProgressDisplay : React.FC<{ progress: number }> = ({ progress }) => {
-            // Clamp progress between 0–100 for safety
-            const clamped = progress / 6;
-            
-            return (
-              <View className="w-full h-6 bg-gray-200 rounded-full overflow-hidden">
-                <View
-                  className="bg-yellow-500 h-full"
-                  style={{ width: `${clamped * 100}%` }}
-                />
-              </View>
-            );
-          };
           useEffect(() => {
             //8 is the maximux
             if(bonusTimeProgress >= 5) {
@@ -81,10 +71,11 @@ export const useStats = (gameState: GameState) => {
             <Text className="text-2xl font-bold text-yellow-600">{totalScore}</Text>
             <Score />
           </View>
-          <View className="flex flex-col gap-2 items-center justify-center bg-green-100 rounded-lg p-2">
-            <PlusFiveSeconds />
-            <TimerDisplay />
-            <BonusTimeProgressDisplay progress={bonusTimeProgress} />
+          <View className="flex flex-col gap-2 items-center justify-center  rounded-lg p-2">
+            {/* <PlusFiveSeconds /> */}
+            <AnimatedCircularProgress progress={bonusTimeProgress / 6 * 100}>
+            {React.useMemo(() => <TimerDisplay />, [])}
+            </AnimatedCircularProgress>
           </View>
         </View>
       )
