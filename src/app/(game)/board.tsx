@@ -1,11 +1,11 @@
 
 import React from "react";
 import { Text, View } from "react-native";
-import { useGameBoard } from "../../src/Components/useGameBoard";
-import { useTimerEvents } from "../../src/Components/useTimerEvents";
-import { GhostModalContent } from "../../src/Components/GhostModalContent";
-import { IsraelOnlyMap } from "../../src/maps/IsraeliMap.Native";
-import GhostModal from "../../src/Components/animations/GhostModal";
+import { useGameBoard } from "../../../src/Components/useGameBoard";
+import { useTimerEvents } from "../../../src/Components/useTimerEvents";
+import { GhostModalContent } from "../../../src/Components/GhostModalContent";
+import { IsraelOnlyMap } from "../../../src/maps/IsraeliMap.Native";
+import GhostModal from "../../../src/Components/animations/GhostModal";
 import MapView from "react-native-maps";
 import { LinearGradient } from "expo-linear-gradient";
 

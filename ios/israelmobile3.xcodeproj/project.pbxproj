@@ -14,7 +14,7 @@
 		96905EF65AED1B983A6B3ABC /* libPods-israelmobile3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-israelmobile3.a */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		78C782F5D5D44A8ABAF7C250 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE182C733C31427CA1C38F64 /* noop-file.swift */; };
+		4E3AEC8A9AD34304A098A9EB /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FB47DFEAAE4A22A7544105 /* noop-file.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,8 +31,8 @@
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-israelmobile3/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		BE182C733C31427CA1C38F64 /* noop-file.swift */ = {isa = PBXFileReference; name = "noop-file.swift"; path = "israelmobile3/noop-file.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
-		F86342D6AC4A4B2C81AA2007 /* israelmobile3-Bridging-Header.h */ = {isa = PBXFileReference; name = "israelmobile3-Bridging-Header.h"; path = "israelmobile3/israelmobile3-Bridging-Header.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		97FB47DFEAAE4A22A7544105 /* noop-file.swift */ = {isa = PBXFileReference; name = "noop-file.swift"; path = "israelmobile3/noop-file.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		24EF8C099B91429EA422CD33 /* israelmobile3-Bridging-Header.h */ = {isa = PBXFileReference; name = "israelmobile3-Bridging-Header.h"; path = "israelmobile3/israelmobile3-Bridging-Header.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,8 +57,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				BE182C733C31427CA1C38F64 /* noop-file.swift */,
-				F86342D6AC4A4B2C81AA2007 /* israelmobile3-Bridging-Header.h */,
+				97FB47DFEAAE4A22A7544105 /* noop-file.swift */,
+				24EF8C099B91429EA422CD33 /* israelmobile3-Bridging-Header.h */,
 			);
 			name = israelmobile3;
 			sourceTree = "<group>";
@@ -198,7 +198,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				8586FCF3ADE7442EB9375CA3 /* israelmobile3-Bridging-Header.h in Resources */,
+				BD228BF10152453EA291EF8E /* israelmobile3-Bridging-Header.h in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -274,7 +274,7 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */,
-				78C782F5D5D44A8ABAF7C250 /* noop-file.swift in Sources */,
+				4E3AEC8A9AD34304A098A9EB /* noop-file.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
