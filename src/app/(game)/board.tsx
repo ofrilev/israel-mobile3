@@ -8,6 +8,8 @@ import { IsraelOnlyMap } from "../../../src/maps/IsraeliMap.Native";
 import GhostModal from "../../../src/Components/animations/GhostModal";
 import MapView from "react-native-maps";
 import { LinearGradient } from "expo-linear-gradient";
+import { getGameTitle } from "@/src/consts/gameTitle";
+import PlaceContainer from "@/src/Components/PlaceContainer";
 
 export default function Board() {
     // Use modular hooks for clean separation of concerns
@@ -51,7 +53,7 @@ export default function Board() {
                     fontWeight: 'bold', 
                     marginBottom: 16,
                     color: '#1F2937'
-                }}>{gamePhase}</Text>
+                }}>{getGameTitle(gamePhase)}</Text>
                 
                 <View style={{ 
                     flexDirection: 'row', 
@@ -60,7 +62,7 @@ export default function Board() {
                     gap: 16, 
                     marginBottom: 16 
                 }}>
-                    <View style={{ 
+                    {/* <View style={{ 
                         borderWidth: 2, 
                         borderColor: '#1F2937', 
                         borderRadius: 8, 
@@ -72,7 +74,8 @@ export default function Board() {
                             fontWeight: 'bold',
                             color: '#1F2937'
                         }}>{currentPlace?.label}</Text>
-                    </View>
+                    </View> */}
+                    <PlaceContainer title={currentPlace?.label || ""} />
                 </View>
                 
                 <View style={{ 
