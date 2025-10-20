@@ -1,0 +1,17 @@
+[
+  {
+    "key": "cmd+s",
+    "command": "editor.action.formatDocument",
+    "when": "editorHasDocumentFormattingProvider && !editorReadonly && !inCompositeEditor"
+  },
+  {
+    "key": "cmd+shift+f",
+    "command": "editor.action.formatDocument",
+    "when": "editorHasDocumentFormattingProvider && !editorReadonly"
+  },
+  {
+    "key": "cmd+k cmd+f",
+    "command": "editor.action.formatSelection",
+    "when": "editorHasDocumentSelectionFormattingProvider && !editorReadonly"
+  }
+]

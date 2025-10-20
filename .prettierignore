@@ -1,0 +1,15 @@
+node_modules/
+.expo/
+.git/
+dist/
+build/
+coverage/
+*.log
+*.lock
+package-lock.json
+yarn.lock
+.DS_Store
+*.min.js
+*.min.css
+assets/
+.cursor/
