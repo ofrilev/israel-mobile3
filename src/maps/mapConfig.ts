@@ -40,7 +40,7 @@ export const generateMapConfig = (israelBounds: [number, number, number, number]
       {
         id: 'background',
         type: 'background',
-        paint: { 'background-color': 'rgba(255,255,255,0.5)' }
+        paint: { 'background-color': 'rgba(255,255,255,0.1)' }
       },
       {
         id: 'israel-fill',

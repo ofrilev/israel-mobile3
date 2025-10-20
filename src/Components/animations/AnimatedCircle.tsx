@@ -52,6 +52,9 @@ const  AnimatedCircularProgress = ({
           <LinearGradient id="fillGradient" x1="0" y1="0" x2="1" y2="1">
             <Stop offset="0%" stopColor="#A7C7E7" />
             <Stop offset="100%" stopColor="#E3F2FD" />
+            <Stop offset="40%" stopColor="#81D4FA" />
+
+
           </LinearGradient>
         </Defs>
 
@@ -90,6 +93,13 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
+  },
+  shadowWrapper: {
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 10, // Android shadow
   },
   centerContent: {
     position: "absolute",

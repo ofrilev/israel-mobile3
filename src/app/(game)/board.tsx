@@ -45,7 +45,7 @@ export default function Board() {
                     <Text className="text-2xl font-bold">{currentPlace?.label}</Text>
                     </View>
                 </View>
-                <View style={{ width: "100%", height: 400 }}>
+                <View style={{ width: "100%", height: 400, borderRadius: 1000, borderBlockColor: "white",  }}>
                     <IsraelOnlyMap 
                         onMapClick={onMapClick} 
                         currentCityPoint={currentPlace?.point || { lat: 0, lng: 0 }}

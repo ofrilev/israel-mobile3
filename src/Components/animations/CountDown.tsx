@@ -34,12 +34,14 @@ export default function CountdownClock({ start, onComplete }: CountdownClockProp
     <Animated.View style={[styles.container, animatedStyle]}>
       <Svg height="50" width="50" viewBox="0 0 100 100">
         <Defs>
-          <LinearGradient id="greenGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+        <LinearGradient id="greenGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+        <Stop offset="0%" stopColor="#4A90E2" />   
+        <Stop offset="100%" stopColor="#607D8B" /> 
+  {/* <Stop offset="50%" stopColor="#81D4FA" /> */}
+
+</LinearGradient>
 
 
-            <Stop offset="0%" stopColor="#4FC3F7" />
-            <Stop offset="100%" stopColor="#E0F7FA" />
-          </LinearGradient>
 
         </Defs>
         <SvgText

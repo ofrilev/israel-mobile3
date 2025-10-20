@@ -71,7 +71,7 @@ export const useStats = (gameState: GameState) => {
             <Text className="text-2xl font-bold text-yellow-600">{totalScore}</Text>
             <Score />
           </View>
-          <View className="flex flex-col gap-2 items-center justify-center  rounded-lg p-2">
+          <View className="flex flex-col gap-2 items-center justify-center rounded-lg p-2">
             {/* <PlusFiveSeconds /> */}
             <AnimatedCircularProgress progress={bonusTimeProgress / 6 * 100}>
             {React.useMemo(() => <TimerDisplay />, [])}
