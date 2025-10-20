@@ -73,6 +73,8 @@ const IsraelOnlyMapComponent: React.FC<IsraelOnlyMapProps> = ({
         allowFileAccessFromFileURLs={true}
         mixedContentMode="always"
         scalesPageToFit={true}
+        backgroundColor="rgba(255, 255, 255, 0.01)"
+        opacity={1}
       />
     </View>
   );
@@ -83,9 +85,13 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     height: 400,
+    backgroundColor: "rgba(255, 255, 255, 0.01)",
+    minHeight: 400,
   },
   webview: {
     flex: 1,
+    backgroundColor: "rgba(255, 255, 255, 0.01)",
+    minHeight: 400,
   },
 });
 

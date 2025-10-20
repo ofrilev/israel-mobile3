@@ -1,12 +1,15 @@
-import React, { useEffect } from "react";
-import { View, StyleSheet } from "react-native";
-import Svg, { Circle, Defs, LinearGradient, Stop } from "react-native-svg";
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, Dimensions } from "react-native";
+import Svg, { Circle, Defs, LinearGradient, Stop, Text as SvgText } from "react-native-svg";
 import Animated, {
   useSharedValue,
   useAnimatedProps,
+  useAnimatedStyle,
   withTiming,
   Easing,
 } from "react-native-reanimated";
+
+const { width: screenWidth } = Dimensions.get('window');
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -16,34 +19,77 @@ type Props = {
   progress: number; // 0–100
   duration?: number;
   children?: React.ReactNode;
+  // Timer-specific props
+  timerSeconds?: number;
+  showTimer?: boolean;
 };
 
-const  AnimatedCircularProgress = ({
-  size = 150,
+const CircularProgressTimer = ({
+  size = 100,
   strokeWidth = 15,
   progress,
   duration = 800,
   children,
+  timerSeconds,
+  showTimer = false,
 }: Props) => {
+  
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
 
   // 🌀 Hold last visual progress smoothly
   const animatedProgress = useSharedValue(0);
+  
+  // Timer state and animation
+  const [count, setCount] = useState(timerSeconds || 0);
+  const scale = useSharedValue(1);
+
+  // Responsive timer sizing
+  const timerSize = (size * 0.4) + 10; // 40% of circle size + 10 pixels
+  const fontSize = timerSize * 1.4;
 
   useEffect(() => {
-    // Animate from current value → new target
-    animatedProgress.value = withTiming(progress, {
-      duration: Math.max(400, duration),
-      easing: Easing.out(Easing.cubic),
-    });
+    // COMMENTED OUT: Animation to test re-render behavior
+    // Only trigger animation if the value actually changes
+    // if (animatedProgress.value !== progress) {
+    //   animatedProgress.value = withTiming(progress, {
+    //     duration: Math.max(400, duration),
+    //     easing: Easing.out(Easing.cubic),
+    //   });
+    // }
+    
+    // Direct assignment without animation for testing
+    animatedProgress.value = progress;
   }, [progress]);
+
+  // Timer countdown effect
+  useEffect(() => {
+    if (showTimer && timerSeconds !== undefined) {
+      setCount(timerSeconds);
+    }
+  }, [timerSeconds, showTimer]);
+
+  useEffect(() => {
+    if (showTimer && count > 0) {
+      const timer = setTimeout(() => {
+        // COMMENTED OUT: Scale animation to test re-render behavior
+        // scale.value = 1.3;
+        // setTimeout(() => (scale.value = withTiming(1, { duration: 300 })), 50);
+        setCount(count - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [count, showTimer]);
 
   const animatedProps = useAnimatedProps(() => {
     const strokeDashoffset =
       circumference - (circumference * animatedProgress.value) / 100;
     return { strokeDashoffset };
   });
+
+  const animatedTimerStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
 
   return (
     <View style={[styles.container, { width: size, height: size }]}>
@@ -84,7 +130,34 @@ const  AnimatedCircularProgress = ({
       </Svg>
 
       {/* Center content */}
-       <View style={styles.centerContent}>{children}</View>
+      <View style={styles.centerContent}>
+        {showTimer ? (
+          <Animated.View style={[styles.timerContainer, animatedTimerStyle]}>
+            <Svg height={timerSize} width={timerSize} viewBox="0 0 100 100">
+              <Defs>
+                <LinearGradient id="timerGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <Stop offset="0%" stopColor="#4A90E2" />   
+                  <Stop offset="100%" stopColor="#607D8B" /> 
+                </LinearGradient>
+              </Defs>
+              <SvgText
+                x="50%"
+                y="60%"
+                textAnchor="middle"
+                fontSize={fontSize}
+                fontWeight="bold"
+                fill="url(#timerGradient)"
+                stroke="#00FF99"
+                strokeWidth="1"
+              >
+                {count}
+              </SvgText>
+            </Svg>
+          </Animated.View>
+        ) : (
+          children
+        )}
+      </View>
     </View>
   );
 }
@@ -110,5 +183,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  timerContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
-export default React.memo(AnimatedCircularProgress);
+export default CircularProgressTimer

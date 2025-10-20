@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { Text, View } from "react-native";
-import CountdownClock from "./animations/CountDown";
 
 // React Native compatible event system for countdown timer
 type EventCallback = (data?: any) => void;
@@ -82,15 +81,6 @@ export function useCountdown(initialSeconds: number = 45) {
   const addFiveSeconds = () => {
     setSecondsLeft(secondsLeft + 5);
   };
-  const TimerDisplay = () => {
-    return (
 
-
-
-          <CountdownClock start={secondsLeft}  />
-
-    );
-  }
-
-  return {  reset, TimerDisplay, addFiveSeconds };
+  return {  reset, secondsLeft, addFiveSeconds };
 }

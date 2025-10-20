@@ -33,26 +33,39 @@ export const generateMapConfig = (israelBounds: [number, number, number, number]
     bounds: israelBounds,
     geoJsonData: mergedGeoJSON,
     style: {
-      baseUrl: 'https://api.maptiler.com/maps/streets/style.json',
-      apiKey: '7SdtjsgWznkkvugdE9tE'
+      baseUrl: 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify({
+        version: 8,
+        sources: {},
+        layers: []
+      })),
+      apiKey: ''
     },
     layers: [
       {
         id: 'background',
         type: 'background',
-        paint: { 'background-color': 'rgba(255,255,255,0.1)' }
+        paint: { 
+          'background-color': 'rgba(0, 0, 0, 0.001)' // Nearly transparent but present
+        }
       },
       {
         id: 'israel-fill',
         type: 'fill',
         source: 'israel',
-        paint: { 'fill-color': 'rgba(0,0,0,0.8)' }
+        paint: { 
+          'fill-color': '#2E8B57',        // Sea green for Israel
+          'fill-opacity': 0.18
+        }
       },
       {
         id: 'israel-outline',
         type: 'line',
         source: 'israel',
-        paint: { 'line-color': '#333', 'line-width': 1.5 }
+        paint: { 
+          'line-color': '#1F4E79',        // Dark blue outline
+          'line-width': 2,
+          'line-opacity': 1.0
+        }
       }
     ]
   };

@@ -31,21 +31,57 @@ export default function Board() {
 
     return (
         <LinearGradient
-    colors={["#4FC3F7", "#E0F7FA", "#FFFFFF"]}
-    start={{ x: 0, y: 0 }}
-    end={{ x: 1, y: 1 }}
-    className="flex-1 items-center justify-center"
-  >  
-        <View className="flex flex-row items-center justify-center gap-4">
-            <View className="h-100px flex flex-col items-center justify-center">
-                <Text className="text-4xl font-bold">{gamePhase}</Text>
-                <StatsDisplay />     
-                <View className="flex flex-row items-center justify-center gap-4">
-                    <View className="flex border-2 border-black-600 rounded-lg p-2 flex-row items-center justify-center gap-4">
-                    <Text className="text-2xl font-bold">{currentPlace?.label}</Text>
+            colors={["#4FC3F7", "#E0F7FA", "#FFFFFF"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{ flex: 1 }}
+        >  
+            {/* Stats Display - positioned absolutely in top right */}
+            <StatsDisplay />
+            
+            <View style={{ 
+                flex: 1, 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                paddingHorizontal: 16,
+                paddingTop: 60 // Add top padding to avoid stats overlap
+            }}>
+                <Text style={{ 
+                    fontSize: 32, 
+                    fontWeight: 'bold', 
+                    marginBottom: 16,
+                    color: '#1F2937'
+                }}>{gamePhase}</Text>
+                
+                <View style={{ 
+                    flexDirection: 'row', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    gap: 16, 
+                    marginBottom: 16 
+                }}>
+                    <View style={{ 
+                        borderWidth: 2, 
+                        borderColor: '#1F2937', 
+                        borderRadius: 8, 
+                        padding: 8,
+                        backgroundColor: 'rgba(255, 255, 255, 0.2)'
+                    }}>
+                        <Text style={{ 
+                            fontSize: 20, 
+                            fontWeight: 'bold',
+                            color: '#1F2937'
+                        }}>{currentPlace?.label}</Text>
                     </View>
                 </View>
-                <View style={{ width: "100%", height: 400, borderRadius: 1000, borderBlockColor: "white",  }}>
+                
+                <View style={{ 
+                    width: "100%", 
+                    height: 400, 
+                    borderRadius: 16,
+                    overflow: 'hidden',
+                    backgroundColor: 'transparent'
+                }}>
                     <IsraelOnlyMap 
                         onMapClick={onMapClick} 
                         currentCityPoint={currentPlace?.point || { lat: 0, lng: 0 }}
@@ -53,7 +89,6 @@ export default function Board() {
                     />
                 </View>
             </View>
-        </View>
         
         {/* Ghost Modal - appears when timer reaches zero with phase-specific content */}
         <GhostModal 

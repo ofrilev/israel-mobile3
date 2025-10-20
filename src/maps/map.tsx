@@ -16,31 +16,22 @@ export const renderMapHtml = ({ currentCityPoint, israelBounds }: MapHtmlProps):
     // Initialize map with pre-calculated configuration
     window.mapInstance = new maplibregl.Map({
       container: 'map',
-      style: '${mapConfig.style.baseUrl}?key=${mapConfig.style.apiKey}',
+      style: '${mapConfig.style.baseUrl}',
       center: [${mapConfig.center[0]}, ${mapConfig.center[1]}],
       zoom: ${mapConfig.zoom}
     });
 
     // Pre-calculated map setup
     window.mapInstance.on('load', () => {
-      // Hide all existing layers (pre-calculated decision)
-      window.mapInstance.getStyle().layers.forEach(layer => {
-        window.mapInstance.setLayoutProperty(layer.id, 'visibility', 'none');
-      });
+      // Starting with blank style, no existing layers to hide
 
-      // Add background layer first (must be at bottom of layer stack)
+      // Add background layer first (nearly transparent)
       ${mapConfig.layers.filter(layer => layer.type === 'background').map(layer => `
         window.mapInstance.addLayer({
           id: '${layer.id}',
           type: '${layer.type}',
           paint: ${JSON.stringify(layer.paint)}
-        }, null); // Add at the very bottom
-        
-        // Force background layer to be visible and stay visible
-        window.mapInstance.setLayoutProperty('${layer.id}', 'visibility', 'visible');
-        
-        // Also set paint property again to ensure it sticks
-        window.mapInstance.setPaintProperty('${layer.id}', 'background-color', ${JSON.stringify(layer.paint['background-color'])});`).join('')}
+        });`).join('')}
 
       // Add GeoJSON source once
       window.mapInstance.addSource('israel', {
@@ -61,13 +52,27 @@ export const renderMapHtml = ({ currentCityPoint, israelBounds }: MapHtmlProps):
     ${generateMarkersScript(currentCityPoint)}
   `;
 
-  // Generate CSS styles
+  // Generate CSS styles with transparent background
   const styles = `
-    html, body, #map {
+    html, body {
       height: 100%;
       width: 100%;
       margin: 0;
       padding: 0;
+      background: transparent;
+    }
+    #map {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      background: transparent !important;
+    }
+    .maplibregl-canvas-container {
+      background: transparent !important;
+    }
+    .maplibregl-canvas {
+      background: transparent !important;
     }
   `;
 
