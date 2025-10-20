@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { Text, View } from "react-native";
+import { useEffect, useRef, useState } from 'react';
+import { Text, View } from 'react-native';
 
 // React Native compatible event system for countdown timer
 type EventCallback = (data?: any) => void;
@@ -21,25 +21,27 @@ class CountdownEventEmitter {
 
   removeEventListener(eventType: string, callback: EventCallback) {
     if (!this.listeners[eventType]) return;
-    this.listeners[eventType] = this.listeners[eventType].filter(cb => cb !== callback);
+    this.listeners[eventType] = this.listeners[eventType].filter(
+      cb => cb !== callback
+    );
   }
 }
 
 export const CountdownEvents = {
   TIMER_FINISHED: 'TIMER_FINISHED',
   emitter: new CountdownEventEmitter(),
-  
+
   emit: (eventType: string, data?: any) => {
     CountdownEvents.emitter.emit(eventType, data);
   },
-  
+
   addEventListener: (eventType: string, callback: EventCallback) => {
     CountdownEvents.emitter.addEventListener(eventType, callback);
   },
-  
+
   removeEventListener: (eventType: string, callback: EventCallback) => {
     CountdownEvents.emitter.removeEventListener(eventType, callback);
-  }
+  },
 };
 
 /**
@@ -55,13 +57,13 @@ export function useCountdown(initialSeconds: number = 45) {
     if (intervalRef.current) clearInterval(intervalRef.current);
 
     intervalRef.current = setInterval(() => {
-      setSecondsLeft((prev) => {
+      setSecondsLeft(prev => {
         if (prev <= 1) {
           clearInterval(intervalRef.current!);
           // Emit event when timer reaches zero
-          CountdownEvents.emit(CountdownEvents.TIMER_FINISHED, { 
+          CountdownEvents.emit(CountdownEvents.TIMER_FINISHED, {
             message: 'Time is up!',
-            timestamp: Date.now()
+            timestamp: Date.now(),
           });
           return 0;
         }
@@ -82,5 +84,5 @@ export function useCountdown(initialSeconds: number = 45) {
     setSecondsLeft(secondsLeft + 5);
   };
 
-  return {  reset, secondsLeft, addFiveSeconds };
+  return { reset, secondsLeft, addFiveSeconds };
 }

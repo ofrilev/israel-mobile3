@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useMemo } from "react";
-import { StyleSheet, View } from "react-native";
-import { WebView } from "react-native-webview";
-import { IsraelOnlyMapProps, Point } from "../../src/@types";
-import { renderMapHtml } from "./map";
+import React, { useEffect, useRef, useMemo } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { WebView } from 'react-native-webview';
+import { IsraelOnlyMapProps, Point } from '../../src/@types';
+import { renderMapHtml } from './map';
 
 // Memoized component to prevent re-renders when currentCityPoint changes
 const IsraelOnlyMapComponent: React.FC<IsraelOnlyMapProps> = ({
@@ -38,12 +38,14 @@ const IsraelOnlyMapComponent: React.FC<IsraelOnlyMapProps> = ({
   };
 
   // Memoize the HTML generation to prevent re-creation on every render
-  const israelBounds: [number, number, number, number] = [34.2, 29.4, 35.9, 33.5];
+  const israelBounds: [number, number, number, number] = [
+    34.2, 29.4, 35.9, 33.5,
+  ];
   const html = useMemo(() => {
     // Generate HTML without currentCityPoint to make it static
     return renderMapHtml({
       currentCityPoint: { lat: 0, lng: 0 }, // Use dummy point, will be updated via JavaScript
-      israelBounds
+      israelBounds,
     });
   }, [israelBounds]); // Only re-generate if bounds change
 
@@ -53,7 +55,7 @@ const IsraelOnlyMapComponent: React.FC<IsraelOnlyMapProps> = ({
       const coords = JSON.parse(event.nativeEvent.data);
       onMapClick?.(coords);
     } catch (err) {
-      console.warn("Failed to parse click event", err);
+      console.warn('Failed to parse click event', err);
     }
   };
 
@@ -61,7 +63,7 @@ const IsraelOnlyMapComponent: React.FC<IsraelOnlyMapProps> = ({
     <View style={styles.container}>
       <WebView
         ref={mapRef as any}
-        originWhitelist={["*"]}
+        originWhitelist={['*']}
         source={{ html }}
         style={styles.webview}
         onMessage={handleMessage}
@@ -83,27 +85,30 @@ const IsraelOnlyMapComponent: React.FC<IsraelOnlyMapProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
+    width: '100%',
     height: 400,
-    backgroundColor: "rgba(255, 255, 255, 0.01)",
+    backgroundColor: 'rgba(255, 255, 255, 0.01)',
     minHeight: 400,
   },
   webview: {
     flex: 1,
-    backgroundColor: "rgba(255, 255, 255, 0.01)",
+    backgroundColor: 'rgba(255, 255, 255, 0.01)',
     minHeight: 400,
   },
 });
 
 // Export memoized version to prevent re-renders when only currentCityPoint changes
-export const IsraelOnlyMap = React.memo(IsraelOnlyMapComponent, (prevProps, nextProps) => {
-  // Only re-render if onMapClick or mapRef changes
-  // currentCityPoint changes are handled via JavaScript injection, not re-renders
-  return (
-    prevProps.onMapClick === nextProps.onMapClick &&
-    prevProps.mapRef === nextProps.mapRef &&
-    prevProps.gamePhase === nextProps.gamePhase
-  );
-});
+export const IsraelOnlyMap = React.memo(
+  IsraelOnlyMapComponent,
+  (prevProps, nextProps) => {
+    // Only re-render if onMapClick or mapRef changes
+    // currentCityPoint changes are handled via JavaScript injection, not re-renders
+    return (
+      prevProps.onMapClick === nextProps.onMapClick &&
+      prevProps.mapRef === nextProps.mapRef &&
+      prevProps.gamePhase === nextProps.gamePhase
+    );
+  }
+);
 
 export default IsraelOnlyMap;

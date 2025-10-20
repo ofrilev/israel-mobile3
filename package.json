@@ -5,7 +5,11 @@
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "format:src": "prettier --write src/",
+    "format:file": "prettier --write"
   },
   "dependencies": {
     "expo": "~51.0.0",
@@ -33,6 +37,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@types/react": "~18.2.45",
+    "prettier": "^3.6.2",
     "typescript": "~5.3.3"
   },
   "private": true

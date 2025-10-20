@@ -1,5 +1,4 @@
-
-import MapView from "react-native-maps";
+import MapView from 'react-native-maps';
 // ===================================
 // Core Enums
 // ===================================
@@ -7,13 +6,13 @@ import MapView from "react-native-maps";
 export enum PlaceType {
   CITY = 'city',
   MOUNTAIN = 'mountain',
-  FAMOUS_PLACE = 'famous_place'
+  FAMOUS_PLACE = 'famous_place',
 }
 
 export enum GamePhase {
   CITIES = 'cities',
   MOUNTAINS = 'mountains',
-  FAMOUS_PLACES = 'famous_places'
+  FAMOUS_PLACES = 'famous_places',
 }
 
 export enum CityRegion {
@@ -23,7 +22,7 @@ export enum CityRegion {
   BEER_TUVIA_REGION = 'beer_tuvia_region',
   HAIFA_CARMEL_REGION = 'haifa_carmel_region',
   GALILEE_REGION = 'galilee_region',
-  ARAVA_DEAD_SEA_REGION = 'arava_dead_sea_region'
+  ARAVA_DEAD_SEA_REGION = 'arava_dead_sea_region',
 }
 
 // ===================================
@@ -33,7 +32,7 @@ export enum CityRegion {
 export type Point = {
   lat: number;
   lng: number;
-}
+};
 
 export type Place = {
   name: string;
@@ -41,7 +40,7 @@ export type Place = {
   point: Point;
   type: PlaceType;
   img?: string;
-}
+};
 
 // ===================================
 // Map Types
@@ -52,7 +51,7 @@ export type MarkerData = {
   coordinate: [number, number];
   color: string;
   text: string;
-}
+};
 
 export interface MarkerHandlerProps {
   userPoint?: Point;
@@ -101,5 +100,4 @@ export interface FloatingPointConfig {
 export type LastScore = {
   time: number;
   score: number;
-}
-
+};

@@ -1,4 +1,4 @@
-import { Point } from "../@types";
+import { Point } from '../@types';
 
 export interface MarkerConfig {
   color: string;
@@ -13,17 +13,17 @@ export interface MarkerTimings {
 export const MARKER_CONFIGS = {
   user: {
     color: '#FF3B30',
-    scale: 0.8
+    scale: 0.8,
   } as MarkerConfig,
   city: {
     color: '#0077ff',
-    scale: 0.8
-  } as MarkerConfig
+    scale: 0.8,
+  } as MarkerConfig,
 };
 
 export const MARKER_TIMINGS: MarkerTimings = {
   cityMarkerDelay: 500,
-  clearMarkersDelay: 1000
+  clearMarkersDelay: 1000,
 };
 
 export const generateMarkersScript = (currentCityPoint: Point): string => {

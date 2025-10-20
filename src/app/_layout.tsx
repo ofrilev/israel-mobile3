@@ -1,12 +1,12 @@
 import { Stack } from 'expo-router';
-import "../../global.css";
+import '../../global.css';
 
 export default function RootLayout() {
   return (
     <Stack>
-      <Stack.Screen 
-        name="index" 
-        options={{ 
+      <Stack.Screen
+        name="index"
+        options={{
           title: 'Israel Geography',
           headerStyle: {
             backgroundColor: '#4FC3F7',
@@ -15,16 +15,10 @@ export default function RootLayout() {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
-        }} 
+        }}
       />
-      <Stack.Screen 
-        name="(game)" 
-        options={{ headerShown: false }} 
-      />
-      <Stack.Screen 
-        name="(utilities)" 
-        options={{ headerShown: false }} 
-      />
+      <Stack.Screen name="(game)" options={{ headerShown: false }} />
+      <Stack.Screen name="(utilities)" options={{ headerShown: false }} />
     </Stack>
   );
 }

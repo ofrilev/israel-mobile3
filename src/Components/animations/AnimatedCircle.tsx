@@ -1,13 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
-import Svg, { Circle, Defs, LinearGradient, Stop, Text as SvgText } from "react-native-svg";
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Dimensions } from 'react-native';
+import Svg, {
+  Circle,
+  Defs,
+  LinearGradient,
+  Stop,
+  Text as SvgText,
+} from 'react-native-svg';
 import Animated, {
   useSharedValue,
   useAnimatedProps,
   useAnimatedStyle,
   withTiming,
   Easing,
-} from "react-native-reanimated";
+} from 'react-native-reanimated';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -33,19 +39,18 @@ const CircularProgressTimer = ({
   timerSeconds,
   showTimer = false,
 }: Props) => {
-  
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
 
   // 🌀 Hold last visual progress smoothly
   const animatedProgress = useSharedValue(0);
-  
+
   // Timer state and animation
   const [count, setCount] = useState(timerSeconds || 0);
   const scale = useSharedValue(1);
 
   // Responsive timer sizing
-  const timerSize = (size * 0.4) + 10; // 40% of circle size + 10 pixels
+  const timerSize = size * 0.4 + 10; // 40% of circle size + 10 pixels
   const fontSize = timerSize * 1.4;
 
   useEffect(() => {
@@ -57,7 +62,7 @@ const CircularProgressTimer = ({
     //     easing: Easing.out(Easing.cubic),
     //   });
     // }
-    
+
     // Direct assignment without animation for testing
     animatedProgress.value = progress;
   }, [progress]);
@@ -99,8 +104,6 @@ const CircularProgressTimer = ({
             <Stop offset="0%" stopColor="#A7C7E7" />
             <Stop offset="100%" stopColor="#E3F2FD" />
             <Stop offset="40%" stopColor="#81D4FA" />
-
-
           </LinearGradient>
         </Defs>
 
@@ -135,9 +138,15 @@ const CircularProgressTimer = ({
           <Animated.View style={[styles.timerContainer, animatedTimerStyle]}>
             <Svg height={timerSize} width={timerSize} viewBox="0 0 100 100">
               <Defs>
-                <LinearGradient id="timerGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <Stop offset="0%" stopColor="#4A90E2" />   
-                  <Stop offset="100%" stopColor="#607D8B" /> 
+                <LinearGradient
+                  id="timerGradient"
+                  x1="0%"
+                  y1="0%"
+                  x2="0%"
+                  y2="100%"
+                >
+                  <Stop offset="0%" stopColor="#4A90E2" />
+                  <Stop offset="100%" stopColor="#607D8B" />
                 </LinearGradient>
               </Defs>
               <SvgText
@@ -160,32 +169,32 @@ const CircularProgressTimer = ({
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   shadowWrapper: {
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.25,
     shadowRadius: 10,
     elevation: 10, // Android shadow
   },
   centerContent: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   timerContainer: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
-export default CircularProgressTimer
+export default CircularProgressTimer;

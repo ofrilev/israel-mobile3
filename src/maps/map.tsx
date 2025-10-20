@@ -1,4 +1,4 @@
-import { Point } from "../@types";
+import { Point } from '../@types';
 import { generateMapConfig, MapConfig } from './mapConfig';
 import { generateMarkersScript } from './markers';
 
@@ -7,10 +7,13 @@ interface MapHtmlProps {
   israelBounds: [number, number, number, number];
 }
 
-export const renderMapHtml = ({ currentCityPoint, israelBounds }: MapHtmlProps): string => {
+export const renderMapHtml = ({
+  currentCityPoint,
+  israelBounds,
+}: MapHtmlProps): string => {
   // Pre-calculate all map configuration
   const mapConfig: MapConfig = generateMapConfig(israelBounds);
-  
+
   // Generate the map initialization script
   const mapScript = `
     // Initialize map with pre-calculated configuration
@@ -26,12 +29,17 @@ export const renderMapHtml = ({ currentCityPoint, israelBounds }: MapHtmlProps):
       // Starting with blank style, no existing layers to hide
 
       // Add background layer first (nearly transparent)
-      ${mapConfig.layers.filter(layer => layer.type === 'background').map(layer => `
+      ${mapConfig.layers
+        .filter(layer => layer.type === 'background')
+        .map(
+          layer => `
         window.mapInstance.addLayer({
           id: '${layer.id}',
           type: '${layer.type}',
           paint: ${JSON.stringify(layer.paint)}
-        });`).join('')}
+        });`
+        )
+        .join('')}
 
       // Add GeoJSON source once
       window.mapInstance.addSource('israel', {
@@ -40,13 +48,18 @@ export const renderMapHtml = ({ currentCityPoint, israelBounds }: MapHtmlProps):
       });
 
       // Add other layers (fill, line, etc.)
-      ${mapConfig.layers.filter(layer => layer.type !== 'background').map(layer => `
+      ${mapConfig.layers
+        .filter(layer => layer.type !== 'background')
+        .map(
+          layer => `
         window.mapInstance.addLayer({
           id: '${layer.id}',
           type: '${layer.type}',
           source: '${layer.source}',
           paint: ${JSON.stringify(layer.paint)}
-        });`).join('')}
+        });`
+        )
+        .join('')}
     });
 
     ${generateMarkersScript(currentCityPoint)}

@@ -1,4 +1,4 @@
-import mergedGeoJSON from "../../assets/merged.json";
+import mergedGeoJSON from '../../assets/merged.json';
 
 export interface MapConfig {
   center: [number, number];
@@ -21,10 +21,12 @@ export interface MapStyle {
   apiKey: string;
 }
 
-export const generateMapConfig = (israelBounds: [number, number, number, number]): MapConfig => {
+export const generateMapConfig = (
+  israelBounds: [number, number, number, number]
+): MapConfig => {
   const center: [number, number] = [
-    (israelBounds[0] + israelBounds[2]) / 2, 
-    (israelBounds[1] + israelBounds[3]) / 2
+    (israelBounds[0] + israelBounds[2]) / 2,
+    (israelBounds[1] + israelBounds[3]) / 2,
   ];
 
   return {
@@ -33,40 +35,44 @@ export const generateMapConfig = (israelBounds: [number, number, number, number]
     bounds: israelBounds,
     geoJsonData: mergedGeoJSON,
     style: {
-      baseUrl: 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify({
-        version: 8,
-        sources: {},
-        layers: []
-      })),
-      apiKey: ''
+      baseUrl:
+        'data:application/json;charset=utf-8,' +
+        encodeURIComponent(
+          JSON.stringify({
+            version: 8,
+            sources: {},
+            layers: [],
+          })
+        ),
+      apiKey: '',
     },
     layers: [
       {
         id: 'background',
         type: 'background',
-        paint: { 
-          'background-color': 'rgba(0, 0, 0, 0.001)' // Nearly transparent but present
-        }
+        paint: {
+          'background-color': 'rgba(0, 0, 0, 0.001)', // Nearly transparent but present
+        },
       },
       {
         id: 'israel-fill',
         type: 'fill',
         source: 'israel',
-        paint: { 
-          'fill-color': '#2E8B57',        // Sea green for Israel
-          'fill-opacity': 0.18
-        }
+        paint: {
+          'fill-color': '#2E8B57', // Sea green for Israel
+          'fill-opacity': 0.18,
+        },
       },
       {
         id: 'israel-outline',
         type: 'line',
         source: 'israel',
-        paint: { 
-          'line-color': '#1F4E79',        // Dark blue outline
+        paint: {
+          'line-color': '#1F4E79', // Dark blue outline
           'line-width': 2,
-          'line-opacity': 1.0
-        }
-      }
-    ]
+          'line-opacity': 1.0,
+        },
+      },
+    ],
   };
 };

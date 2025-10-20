@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import React, { useEffect, useState } from 'react';
+import { Text, View } from 'react-native';
 import Animated, {
   Easing,
   useAnimatedStyle,
   useSharedValue,
   withSequence,
-  withTiming
-} from "react-native-reanimated";
-import { FloatingPointConfig, FloatingPointsProps, FloatingPointVariant } from "../../../src/@types";
+  withTiming,
+} from 'react-native-reanimated';
+import {
+  FloatingPointConfig,
+  FloatingPointsProps,
+  FloatingPointVariant,
+} from '../../../src/@types';
 
 const variants: Record<FloatingPointVariant, FloatingPointConfig> = {
   default: {
@@ -15,7 +19,7 @@ const variants: Record<FloatingPointVariant, FloatingPointConfig> = {
     initialY: 20,
     animateY: -20,
     textColor: 'text-yellow-500',
-    fontSize: 'text-3xl'
+    fontSize: 'text-3xl',
   },
   speedBonus: {
     duration: 1,
@@ -23,27 +27,23 @@ const variants: Record<FloatingPointVariant, FloatingPointConfig> = {
     animateY: 10,
     textColor: 'text-green-200',
     fontSize: 'text-xl',
-    customText: '🔥 speed bonus'
+    customText: '🔥 speed bonus',
   },
   score: {
     duration: 2,
     initialY: 20,
     animateY: -20,
     textColor: 'text-yellow-500',
-    fontSize: 'text-3md'
-  }
+    fontSize: 'text-3md',
+  },
 };
 
-
-
-const FloatingPointsComponent: React.FC<FloatingPointsProps & { variant: FloatingPointVariant }> = ({ 
-  trigger, 
-  text, 
-  variant 
-}) => {
+const FloatingPointsComponent: React.FC<
+  FloatingPointsProps & { variant: FloatingPointVariant }
+> = ({ trigger, text, variant }) => {
   const config = variants[variant];
   const displayText = config.customText || text;
-  
+
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(config.initialY || 20);
 
@@ -92,7 +92,7 @@ const FloatingPointsComponent: React.FC<FloatingPointsProps & { variant: Floatin
 
 export const useFloatingPoint = (
   variant: FloatingPointVariant = 'default',
-  defaultText = "+5", 
+  defaultText = '+5',
   timeout: number = 1000
 ) => {
   const [trigger, setTrigger] = useState(false);
@@ -111,9 +111,9 @@ export const useFloatingPoint = (
   };
 
   const FloatingPoints = () => (
-    <FloatingPointsComponent 
-      trigger={trigger} 
-      text={currentText} 
+    <FloatingPointsComponent
+      trigger={trigger}
+      text={currentText}
       variant={variant}
     />
   );

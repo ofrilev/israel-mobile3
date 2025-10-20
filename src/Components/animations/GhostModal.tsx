@@ -1,8 +1,15 @@
-import { LinearGradient } from "expo-linear-gradient";
-import React, { useEffect, useRef } from "react";
-import { Animated, Dimensions, Modal, Pressable, StyleSheet, View } from "react-native";
+import { LinearGradient } from 'expo-linear-gradient';
+import React, { useEffect, useRef } from 'react';
+import {
+  Animated,
+  Dimensions,
+  Modal,
+  Pressable,
+  StyleSheet,
+  View,
+} from 'react-native';
 
-const { height } = Dimensions.get("window");
+const { height } = Dimensions.get('window');
 
 type GhostModalProps = {
   visible: boolean;
@@ -10,7 +17,11 @@ type GhostModalProps = {
   children?: React.ReactNode;
 };
 
-export default function GhostModal({ visible, onClose, children }: GhostModalProps) {
+export default function GhostModal({
+  visible,
+  onClose,
+  children,
+}: GhostModalProps) {
   const translateY = useRef(new Animated.Value(height)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
@@ -51,10 +62,10 @@ export default function GhostModal({ visible, onClose, children }: GhostModalPro
       <Pressable style={styles.overlay} onPress={onClose}>
         <LinearGradient
           colors={[
-            "rgba(0,0,0,0.8)",
-            "rgba(0,0,0,0.5)",
-            "rgba(0,0,0,0.2)",
-            "transparent",
+            'rgba(0,0,0,0.8)',
+            'rgba(0,0,0,0.5)',
+            'rgba(0,0,0,0.2)',
+            'transparent',
           ]}
           style={StyleSheet.absoluteFill}
         />
@@ -79,24 +90,24 @@ export default function GhostModal({ visible, onClose, children }: GhostModalPro
 const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalContainer: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   contentBox: {
-    width: "80%",
+    width: '80%',
     borderRadius: 20,
-    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     padding: 20,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOpacity: 0.25,
     shadowRadius: 10,
     elevation: 8,

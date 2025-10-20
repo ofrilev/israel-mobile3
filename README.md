@@ -1,6 +1,7 @@
 # Expo + NativeWind Project (Expo Go Compatible)
 
 A fully functional Expo project showcasing the integration of:
+
 - **Expo SDK 52** - Latest stable Expo version
 - **React Native 0.76.9** - Modern React Native
 - **Expo Router v4** - File-based navigation
@@ -19,11 +20,13 @@ A fully functional Expo project showcasing the integration of:
 ### Installation
 
 1. Install dependencies:
+
 ```bash
 npm install
 ```
 
 2. Start the development server:
+
 ```bash
 npm start
 ```
@@ -36,6 +39,7 @@ npm start
 ## 📱 What You'll See
 
 ### Home Screen (`/`)
+
 - Beautiful gradient background using NativeWind
 - Multiple styled cards showcasing each technology
 - Tailwind classes like `bg-blue-500`, `rounded-2xl`, `shadow-lg`, `p-6`
@@ -43,6 +47,7 @@ npm start
 - Navigation to the map screen
 
 ### Map Screen (`/map`)
+
 - Styled map placeholder with NativeWind
 - Simulated map pins with animations
 - Clean UI demonstrating NativeWind capabilities
@@ -51,14 +56,17 @@ npm start
 ## 🛠️ Technology Stack
 
 ### Core Framework
+
 - **Expo SDK**: 52.0.0
 - **React Native**: 0.76.9
 - **React**: 18.3.1
 
 ### Navigation
+
 - **expo-router**: 4.0.0 (file-based routing in `app/` directory)
 
 ### Styling
+
 - **NativeWind**: 4.1.23 (Tailwind CSS for React Native)
 - **Tailwind CSS**: 3.4.17
 
@@ -85,13 +93,12 @@ NativeWind is fully configured and working! You can use Tailwind classes directl
 
 ```tsx
 <View className="bg-blue-500 p-4 rounded-xl shadow-lg">
-  <Text className="text-white font-bold text-2xl">
-    Hello NativeWind!
-  </Text>
+  <Text className="text-white font-bold text-2xl">Hello NativeWind!</Text>
 </View>
 ```
 
 All standard Tailwind utilities work:
+
 - Layout: `flex`, `flex-1`, `items-center`, `justify-center`
 - Spacing: `p-4`, `m-2`, `space-y-4`, `gap-2`
 - Colors: `bg-blue-500`, `text-white`, `border-gray-200`
@@ -113,22 +120,27 @@ To use your own map tiles, update the `styleURL` in `app/map.tsx`.
 ## 🔧 Configuration Details
 
 ### Babel Config
+
 - Uses `babel-preset-expo` with NativeWind plugin
 - Configured for React Native Reanimated
 - Enables JSX transform for NativeWind
 
 ### Metro Config
+
 - Integrated with NativeWind metro plugin
 - Configured to load `global.css`
 
 ### Tailwind Config
+
 - Content paths set to `app/**` and `components/**`
 - Uses NativeWind preset for React Native compatibility
 
 ## 🐛 Troubleshooting
 
 ### NativeWind styles not appearing?
+
 1. Clear Metro bundler cache:
+
 ```bash
 npx expo start --clear
 ```
@@ -138,13 +150,16 @@ npx expo start --clear
 3. Check that classes are in the `tailwind.config.js` content paths
 
 ### MapLibre not rendering?
+
 1. Make sure you're testing on a device/simulator (not Expo Go for production)
 2. For production builds, run:
+
 ```bash
 npx expo prebuild
 ```
 
 ### General issues?
+
 ```bash
 # Clear all caches and reinstall
 rm -rf node_modules
@@ -188,4 +203,3 @@ npx expo start --clear
 ---
 
 Built with ❤️ using Expo SDK 52
-
