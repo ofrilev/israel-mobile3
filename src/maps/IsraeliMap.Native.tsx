@@ -1,83 +1,190 @@
-import React, { useEffect, useRef, useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { WebView } from 'react-native-webview';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { StyleSheet, View, LayoutChangeEvent } from 'react-native';
+import Mapbox, { Camera, MapView, PointAnnotation } from '@rnmapbox/maps';
 import { IsraelOnlyMapProps, Point } from '../../src/@types';
-import { renderMapHtml } from './map';
+import {
+  generateIsraelMapStyle,
+  ISRAEL_BOUNDS,
+  ISRAEL_MAX_BOUNDS,
+} from './mapConfig';
 
-// Memoized component to prevent re-renders when currentCityPoint changes
+// Use MapLibre backend (no token)
+Mapbox.setAccessToken(null);
+
 const IsraelOnlyMapComponent: React.FC<IsraelOnlyMapProps> = ({
   onMapClick,
   currentCityPoint,
   mapRef,
 }: IsraelOnlyMapProps) => {
-  const webViewRef = useRef<WebView>(null);
-  const prevCityPoint = useRef<Point>(currentCityPoint);
+  const mapViewRef = useRef<any>(null);
+  const userMarkerRef = useRef<any>(null);
+  const cityMarkerRef = useRef<any>(null);
+  const cameraRef = useRef<any>(null);
+  const [showUserMarker, setShowUserMarker] = useState(false);
+  const [showCityMarker, setShowCityMarker] = useState(false);
+  const [scrollEnabled, setScrollEnabled] = useState(false);
+  const [layout, setLayout] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
 
-  // Handle initial marker setup and updates
+  const [userMarkerCoords, setUserMarkerCoords] = useState<[number, number]>([
+    0, 0,
+  ]);
+  const [cityMarkerCoords, setCityMarkerCoords] = useState<[number, number]>([
+    0, 0,
+  ]);
+
+  const CENTER_COORDINATE: [number, number] = [
+    (ISRAEL_BOUNDS[0] + ISRAEL_BOUNDS[2]) / 2,
+    (ISRAEL_BOUNDS[1] + ISRAEL_BOUNDS[3]) / 2,
+  ];
+  const MIN_ZOOM = 6.0;
+
+  /** 🔁 Layout listener — handle dynamic map container sizing */
+  const onLayout = (e: LayoutChangeEvent) => {
+    const { width, height } = e.nativeEvent.layout;
+    setLayout({ width, height });
+  };
+
+  /** 🗺️ Dynamically fit camera once layout is known */
   useEffect(() => {
-    if (currentCityPoint !== prevCityPoint.current) {
-      prevCityPoint.current = currentCityPoint;
-      webViewRef.current?.injectJavaScript(`
-        if (window.updateCityMarker) {
-          window.updateCityMarker(${JSON.stringify(currentCityPoint)});
-        }
-      `);
+    if (layout && cameraRef.current) {
+      const padding = Math.min(layout.width, layout.height) * 0.1;
+      cameraRef.current.fitBounds(
+        [ISRAEL_BOUNDS[0], ISRAEL_BOUNDS[1]],
+        [ISRAEL_BOUNDS[2], ISRAEL_BOUNDS[3]],
+        padding,
+        0
+      );
+    }
+  }, [layout]);
+
+  /** 🎯 Update city marker when props change */
+  useEffect(() => {
+    if (
+      currentCityPoint &&
+      (currentCityPoint.lat !== 0 || currentCityPoint.lng !== 0)
+    ) {
+      setCityMarkerCoords([currentCityPoint.lng, currentCityPoint.lat]);
     }
   }, [currentCityPoint]);
 
-  // Set initial marker when WebView loads
-  const handleWebViewLoad = () => {
-    // Small delay to ensure map is fully initialized
-    setTimeout(() => {
-      webViewRef.current?.injectJavaScript(`
-        if (window.updateCityMarker) {
-          window.updateCityMarker(${JSON.stringify(currentCityPoint)});
+  /** 📡 Camera behavior */
+  const handleCameraChanged = useCallback(
+    (event: any) => {
+      const zoom = event.properties.zoom;
+
+      // Lock panning below threshold
+      if (zoom > MIN_ZOOM && !scrollEnabled) {
+        setScrollEnabled(true);
+      } else if (zoom <= MIN_ZOOM && scrollEnabled) {
+        setScrollEnabled(false);
+      }
+
+      // Auto recentre at min zoom
+      if (zoom <= MIN_ZOOM + 0.05 && cameraRef.current) {
+        cameraRef.current.setCamera({
+          centerCoordinate: CENTER_COORDINATE,
+          zoomLevel: MIN_ZOOM,
+          animationDuration: 800,
+        });
+      }
+    },
+    [scrollEnabled]
+  );
+
+  /** 👆 Handle clicks and delayed marker display */
+  const handleMapPress = useCallback(
+    (feature: any) => {
+      const { geometry } = feature;
+      if (!geometry?.coordinates) return;
+
+      const [lng, lat] = geometry.coordinates;
+      const clickPoint: Point = { lat, lng };
+
+      setShowUserMarker(false);
+      setShowCityMarker(false);
+
+      setUserMarkerCoords([lng, lat]);
+      setShowUserMarker(true);
+
+      setTimeout(() => {
+        if (
+          currentCityPoint &&
+          (currentCityPoint.lat !== 0 || currentCityPoint.lng !== 0)
+        ) {
+          setCityMarkerCoords([currentCityPoint.lng, currentCityPoint.lat]);
+          setShowCityMarker(true);
+
+          setTimeout(() => {
+            setShowUserMarker(false);
+            setShowCityMarker(false);
+          }, 1000);
         }
-      `);
-    }, 500);
-  };
+      }, 500);
 
-  // Memoize the HTML generation to prevent re-creation on every render
-  const israelBounds: [number, number, number, number] = [
-    34.2, 29.4, 35.9, 33.5,
-  ];
-  const html = useMemo(() => {
-    // Generate HTML without currentCityPoint to make it static
-    return renderMapHtml({
-      currentCityPoint: { lat: 0, lng: 0 }, // Use dummy point, will be updated via JavaScript
-      israelBounds,
-    });
-  }, [israelBounds]); // Only re-generate if bounds change
+      onMapClick?.(clickPoint);
+    },
+    [currentCityPoint, onMapClick]
+  );
 
-  // When a message (click) is received from the WebView
-  const handleMessage = (event: any) => {
-    try {
-      const coords = JSON.parse(event.nativeEvent.data);
-      onMapClick?.(coords);
-    } catch (err) {
-      console.warn('Failed to parse click event', err);
-    }
-  };
+  const mapStyle = generateIsraelMapStyle();
 
   return (
-    <View style={styles.container}>
-      <WebView
-        ref={mapRef as any}
-        originWhitelist={['*']}
-        source={{ html }}
-        style={styles.webview}
-        onMessage={handleMessage}
-        onLoad={handleWebViewLoad}
-        javaScriptEnabled={true}
-        domStorageEnabled={true}
-        allowFileAccess={true}
-        allowUniversalAccessFromFileURLs={true}
-        allowFileAccessFromFileURLs={true}
-        mixedContentMode="always"
-        scalesPageToFit={true}
-        backgroundColor="rgba(255, 255, 255, 0.01)"
-        opacity={1}
-      />
+    <View style={styles.container} onLayout={onLayout}>
+      <MapView
+        ref={ref => {
+          mapViewRef.current = ref;
+          if (mapRef) (mapRef as any).current = ref;
+        }}
+        surfaceView
+        style={styles.map}
+        styleJSON={JSON.stringify(mapStyle)}
+        onPress={handleMapPress}
+        zoomEnabled
+        pitchEnabled={false}
+        rotateEnabled={false}
+        logoEnabled={false}
+        attributionEnabled={false}
+        compassEnabled={false}
+        scaleBarEnabled={false}
+        onCameraChanged={handleCameraChanged}
+        scrollEnabled={scrollEnabled}
+      >
+        <Camera
+          ref={cameraRef}
+          centerCoordinate={CENTER_COORDINATE}
+          minZoomLevel={MIN_ZOOM}
+          maxZoomLevel={12}
+          maxBounds={{
+            ne: ISRAEL_MAX_BOUNDS.ne,
+            sw: ISRAEL_MAX_BOUNDS.sw,
+          }}
+          zoomLevel={6.0}
+          animationDuration={0}
+        />
+
+        {showUserMarker && (
+          <PointAnnotation
+            ref={userMarkerRef}
+            id="user-marker"
+            coordinate={userMarkerCoords}
+          >
+            <View style={styles.userMarker} />
+          </PointAnnotation>
+        )}
+
+        {showCityMarker && (
+          <PointAnnotation
+            ref={cityMarkerRef}
+            id="city-marker"
+            coordinate={cityMarkerCoords}
+          >
+            <View style={styles.cityMarker} />
+          </PointAnnotation>
+        )}
+      </MapView>
     </View>
   );
 };
@@ -85,30 +192,48 @@ const IsraelOnlyMapComponent: React.FC<IsraelOnlyMapProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-    height: 400,
-    backgroundColor: 'rgba(255, 255, 255, 0.01)',
+    width: '70%',
     minHeight: 400,
+    backgroundColor: 'transparent',
   },
-  webview: {
+  map: {
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.01)',
-    minHeight: 400,
+    backgroundColor: 'transparent',
+  },
+  userMarker: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#FF3B30',
+    borderWidth: 2,
+    borderColor: 'white',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  cityMarker: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#0077ff',
+    borderWidth: 2,
+    borderColor: 'white',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
   },
 });
 
-// Export memoized version to prevent re-renders when only currentCityPoint changes
 export const IsraelOnlyMap = React.memo(
   IsraelOnlyMapComponent,
-  (prevProps, nextProps) => {
-    // Only re-render if onMapClick or mapRef changes
-    // currentCityPoint changes are handled via JavaScript injection, not re-renders
-    return (
-      prevProps.onMapClick === nextProps.onMapClick &&
-      prevProps.mapRef === nextProps.mapRef &&
-      prevProps.gamePhase === nextProps.gamePhase
-    );
-  }
+  (prev, next) =>
+    prev.onMapClick === next.onMapClick &&
+    prev.mapRef === next.mapRef &&
+    prev.gamePhase === next.gamePhase
 );
 
 export default IsraelOnlyMap;

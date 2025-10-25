@@ -5,22 +5,28 @@ export interface MapConfig {
   zoom: number;
   bounds: [number, number, number, number];
   geoJsonData: any;
-  layers: LayerConfig[];
   style: MapStyle;
+}
+
+export interface MapStyle {
+  version: number;
+  sources: Record<string, any>;
+  layers: LayerConfig[];
 }
 
 export interface LayerConfig {
   id: string;
-  type: 'background' | 'fill' | 'line';
+  type: 'background' | 'fill' | 'line' | 'raster';
+  sourceLayer?: string;
   source?: string;
   paint: Record<string, any>;
+  filter?: any[];
 }
 
-export interface MapStyle {
-  baseUrl: string;
-  apiKey: string;
-}
-
+/**
+ * Generates a MapLibre style that renders only inside Israel's polygon,
+ * with the rest of the world fully transparent.
+ */
 export const generateMapConfig = (
   israelBounds: [number, number, number, number]
 ): MapConfig => {
@@ -29,50 +35,117 @@ export const generateMapConfig = (
     (israelBounds[1] + israelBounds[3]) / 2,
   ];
 
+  // Flatten Israel polygons for the worldMask “hole”
+  const combinedCoordinates = mergedGeoJSON.features
+    .map((geometry: any) => geometry.geometry.coordinates)
+    .flat();
+
   return {
     center,
     zoom: 5.95,
     bounds: israelBounds,
+
     geoJsonData: mergedGeoJSON,
     style: {
-      baseUrl:
-        'data:application/json;charset=utf-8,' +
-        encodeURIComponent(
-          JSON.stringify({
-            version: 8,
-            sources: {},
-            layers: [],
-          })
-        ),
-      apiKey: '',
+      version: 8,
+      sources: {
+        israel: {
+          type: 'geojson',
+          data: mergedGeoJSON,
+        },
+        terrainSource: {
+          type: 'raster',
+          tiles: ['https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}'],
+          tileSize: 256,
+          maxzoom: 20,
+        },
+        // ⚠️ Do not modify worldMask: outer world polygon + inner Israel hole
+        worldMask: {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: [
+              {
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                  type: 'Polygon',
+                  coordinates: [
+                    // Outer ring (covers entire world)
+                    [
+                      [-180, -85],
+                      [180, -85],
+                      [180, 85],
+                      [-180, 85],
+                      [-180, -85],
+                    ],
+                    // Inner ring (Israel boundaries → “hole”)
+                    ...combinedCoordinates,
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      },
+      layers: [
+        // 🗺️ Base terrain imagery (Google satellite tiles)
+        {
+          id: 'terrain-raster',
+          type: 'raster',
+          source: 'terrainSource',
+          paint: {
+            'raster-opacity': 1.0,
+          },
+        },
+
+        // 🧩 Transparent mask outside Israel (lets background show through)
+        {
+          id: 'outside-mask',
+          type: 'fill',
+          source: 'worldMask',
+          paint: {
+            'fill-color': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              0,
+              '#4FC3F7',
+              10,
+              '#E0F7FA',
+              20,
+              '#FFFFFF',
+            ],
+          },
+        },
+
+        // ✏️ Israel outline (optional visual border)
+        {
+          id: 'israel-outline',
+          type: 'line',
+          source: 'israel',
+          paint: {
+            'line-color': '#1F4E79',
+            'line-width': 1.5,
+            'line-opacity': 0.8,
+          },
+        },
+      ],
     },
-    layers: [
-      {
-        id: 'background',
-        type: 'background',
-        paint: {
-          'background-color': 'rgba(0, 0, 0, 0.001)', // Nearly transparent but present
-        },
-      },
-      {
-        id: 'israel-fill',
-        type: 'fill',
-        source: 'israel',
-        paint: {
-          'fill-color': '#2E8B57', // Sea green for Israel
-          'fill-opacity': 0.18,
-        },
-      },
-      {
-        id: 'israel-outline',
-        type: 'line',
-        source: 'israel',
-        paint: {
-          'line-color': '#1F4E79', // Dark blue outline
-          'line-width': 2,
-          'line-opacity': 1.0,
-        },
-      },
-    ],
   };
+};
+
+// 🇮🇱 Default Israel bounds
+export const ISRAEL_BOUNDS: [number, number, number, number] = [
+  34.2, 29.4, 35.9, 33.5,
+];
+export const ISRAEL_MAX_BOUNDS: { ne: [number, number]; sw: [number, number] } =
+  {
+    ne: [34.2, 29.4],
+    sw: [35.9, 33.5],
+  };
+
+// Export ready-to-use MapLibre style
+export const generateIsraelMapStyle = (): MapStyle => {
+  return generateMapConfig(ISRAEL_BOUNDS).style;
 };
